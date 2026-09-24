@@ -87,8 +87,10 @@ footer{padding:8px 22px calc(28px + env(safe-area-inset-bottom,0px));max-width:5
       <svg class="steam" viewBox="0 0 300 120" preserveAspectRatio="xMinYMax meet"><path d="M40 110c-18-20 18-30 0-52"/><path d="M90 110c-18-20 18-30 0-52"/><path d="M140 110c-18-20 18-30 0-52"/></svg>
     </div>
     <div class="row">
-      <a class="btn" href="#view3d">Explore the bag</a>
+      <button id="fsBtn" type="button">Enter full screen</button>
+      <a class="btn ghost" href="#view3d">Explore the bag</a>
     </div>
+    <p class="hint" id="fsHint"></p>
   </section>
 
   <!-- 2. 3D viewer -->
@@ -184,12 +186,19 @@ footer{padding:8px 22px calc(28px + env(safe-area-inset-bottom,0px));max-width:5
   var reqFS=de.requestFullscreen||de.webkitRequestFullscreen;
   var inFS=function(){return document.fullscreenElement||document.webkitFullscreenElement};
   function goFS(){try{if(reqFS&&!inFS()){var p=reqFS.call(de);if(p&&p.catch)p.catch(function(){})}}catch(e){}}
-  // No button, no message. Browsers only allow full screen after a touch, so the
-  // first tap anywhere on the page (Android Chrome) enters it silently.
-  var evs=['pointerup','click','touchend'];
-  function disarm(){evs.forEach(function(t){document.removeEventListener(t,goFS)})}
-  document.addEventListener('fullscreenchange',function(){if(inFS())disarm()});
-  if(reqFS){evs.forEach(function(t){document.addEventListener(t,goFS,{passive:true})})}
+  if(reqFS){
+    // Browsers only allow full screen after a touch, so the first tap anywhere enters it.
+    var once=function(){goFS();document.removeEventListener('pointerup',once)};
+    document.addEventListener('pointerup',once);
+    $('fsHint').textContent='Tap anywhere to go full screen.';
+  }else{
+    $('fsBtn').textContent='Hide address bar';
+    $('fsHint').textContent='On iPhone, scroll down to collapse the bars. For true full screen: Share > Add to Home Screen.';
+  }
+  $('fsBtn').addEventListener('click',function(){
+    if(reqFS){inFS()?(document.exitFullscreen||document.webkitExitFullscreen).call(document):goFS()}
+    else{$('view3d').scrollIntoView({behavior:reduce?'auto':'smooth'})}
+  });
 
   /* ---- 3D drag rotate ---- */
   var box=$('box'),stage=$('stage'),ry=-25,drag=false,lx=0,auto=!reduce;
