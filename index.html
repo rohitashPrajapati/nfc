@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f2a35">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Marlo Coffee - Tap experience</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#eef4f1;--surface:#ffffff;--ink:#0f2a35;--muted:#4a6570;--accent:#f2b544;--on-accent:#0f2a35;--line:#c9d8d2;--ok:#1f7a5a;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f2a35;--surface:#163845;--ink:#f1f6f3;--muted:#9db8bf;--line:#28505e}}
+:root[data-theme="dark"]{--bg:#0f2a35;--surface:#163845;--ink:#f1f6f3;--muted:#9db8bf;--line:#28505e}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-snap-type:y proximity;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Instrument Sans",system-ui,sans-serif;overscroll-behavior-y:none}
+h1,h2{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;line-height:1.05;margin:0}
+h1{font-size:clamp(2.4rem,11vw,4rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:800;letter-spacing:-.01em}
+p{margin:0}
+section{min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:28px 22px;max-width:560px;margin:0 auto}
+.sub{color:var(--muted);max-width:34ch}
+button,.btn{font:600 1rem "Instrument Sans",system-ui,sans-serif;border:0;border-radius:14px;padding:14px 20px;background:var(--accent);color:var(--on-accent);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:48px}
+button.ghost,.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+button:focus-visible,.btn:focus-visible,.star:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.greet{font-weight:600;color:var(--muted)}
+.hero-art{position:relative;height:120px}
+.steam{position:absolute;bottom:0;left:0;width:100%;height:100%}
+.steam path{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;stroke-dasharray:60;animation:rise 3.2s ease-in-out infinite}
+.steam path:nth-child(2){animation-delay:.6s}.steam path:nth-child(3){animation-delay:1.2s}
+@keyframes rise{0%{stroke-dashoffset:60;opacity:0}30%{opacity:1}100%{stroke-dashoffset:-60;opacity:0}}
+.hint{font-size:.85rem;color:var(--muted)}
+/* 3D */
+.stage{height:300px;display:grid;place-items:center;perspective:900px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.box{position:relative;width:150px;height:210px;transform-style:preserve-3d;transform:rotateX(-12deg) rotateY(var(--ry,-25deg))}
+.f{position:absolute;display:grid;place-items:center;text-align:center;font:800 1.15rem "Bricolage Grotesque",system-ui,sans-serif;backface-visibility:hidden;border:2px solid rgba(0,0,0,.15)}
+.f.front,.f.back{width:150px;height:210px;left:0;top:0}
+.f.side{width:70px;height:210px;left:40px;top:0;font-size:.8rem}
+.f.cap{width:150px;height:70px;left:0;top:70px}
+.front{background:#f2b544;color:#0f2a35;transform:translateZ(35px)}
+.back{background:#e6a52e;color:#0f2a35;transform:rotateY(180deg) translateZ(35px);font-size:.85rem;padding:14px;font-weight:600}
+.side.r{background:#0f2a35;color:#f2b544;transform:rotateY(90deg) translateZ(75px)}
+.side.l{background:#0f2a35;color:#f2b544;transform:rotateY(-90deg) translateZ(75px)}
+.cap.t{background:#c98a1c;transform:rotateX(90deg) translateZ(105px)}
+.cap.b{background:#c98a1c;transform:rotateX(-90deg) translateZ(105px)}
+/* brew */
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:20px}
+.brew{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.ring{position:relative;width:120px;height:120px}
+.ring svg{width:120px;height:120px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9}
+.ring .bg{stroke:var(--line)}.ring .fg{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 1.7rem "Bricolage Grotesque",system-ui,sans-serif}
+.steps{display:flex;gap:8px;margin-top:4px}
+.dot{flex:1;height:6px;border-radius:3px;background:var(--line)}.dot.on{background:var(--accent)}.dot.done{background:var(--ok)}
+/* scratch */
+.scratch{position:relative;height:150px;border-radius:20px;overflow:hidden;border:1.5px solid var(--line);background:var(--surface)}
+.prize{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:4px}
+.prize b{font:800 2rem "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:.04em}
+.scratch canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;transition:opacity .6s}
+/* review */
+.stars{display:flex;gap:6px}
+.star{background:transparent;border:0;padding:4px;min-height:0;font-size:2.2rem;line-height:1;color:var(--line);cursor:pointer}
+.star.on{color:var(--accent)}
+textarea{width:100%;min-height:90px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;padding:12px;resize:vertical}
+.msg{color:var(--ok);font-weight:600}
+[hidden]{display:none!important}
+footer{padding:8px 22px calc(28px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;max-width:90%;text-align:center;z-index:9}
+@media (prefers-reduced-motion:reduce){.steam path{animation:none;stroke-dashoffset:0;opacity:1}.ring .fg{transition:none}.scratch canvas{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <!-- 1. Hero: greeting changes by time of day and by tap count -->
+  <section id="hero">
+    <p class="greet" id="greet">Hello</p>
+    <h1>You're holding a fresh roast.</h1>
+    <p class="sub">Your tap unlocked the bag, a brew guide and an offer. Everything is one swipe away.</p>
+    <div class="hero-art" aria-hidden="true">
+      <svg class="steam" viewBox="0 0 300 120" preserveAspectRatio="xMinYMax meet"><path d="M40 110c-18-20 18-30 0-52"/><path d="M90 110c-18-20 18-30 0-52"/><path d="M140 110c-18-20 18-30 0-52"/></svg>
+    </div>
+    <div class="row">
+      <a class="btn" href="#view3d">Explore the bag</a>
+    </div>
+  </section>
+
+  <!-- 2. 3D viewer -->
+  <section id="view3d">
+    <h2>Turn it around</h2>
+    <p class="sub">Drag sideways to rotate. Swap this cube for your own 3D model (GLB/USDZ) to add "view in your room" AR.</p>
+    <div class="stage" id="stage" aria-label="Rotatable 3D coffee bag">
+      <div class="box" id="box">
+        <div class="f front">Marlo<br>Ethiopia<br>Washed</div>
+        <div class="f back">Roasted 12 days ago. Notes of jasmine, peach and honey.</div>
+        <div class="f side r">250 g</div>
+        <div class="f side l">Light roast</div>
+        <div class="f cap t"></div>
+        <div class="f cap b"></div>
+      </div>
+    </div>
+    <div class="row"><button class="ghost" id="flip" type="button">Flip to back</button></div>
+  </section>
+
+  <!-- 3. Brew guide (stands in for video / how-to content) -->
+  <section id="brew">
+    <h2>Brew it right</h2>
+    <div class="card">
+      <div class="brew">
+        <div class="ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" id="fg" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="0"/></svg><b id="clock">0:30</b></div>
+        <div>
+          <p id="stepName" style="font-weight:600;font-size:1.15rem">Bloom</p>
+          <p class="hint" id="stepTip">Pour 50 g of water, let the coffee swell.</p>
+        </div>
+      </div>
+      <div class="steps" id="dots" aria-hidden="true"></div>
+      <div class="row" style="margin-top:16px">
+        <button id="go" type="button">Start</button>
+        <button class="ghost" id="skip" type="button">Next step</button>
+      </div>
+    </div>
+    <p class="hint">Replace this card with an embedded video (a &lt;video&gt; tag or YouTube/Vimeo iframe) if you prefer.</p>
+  </section>
+
+  <!-- 4. Coupon -->
+  <section id="offer">
+    <h2>Your offer</h2>
+    <p class="sub" id="offerSub">Scratch the card to reveal it.</p>
+    <div class="scratch" id="scratch">
+      <div class="prize"><b id="code">WELCOME10</b><span id="deal">10% off your next bag</span></div>
+      <canvas id="cover" aria-label="Scratch to reveal your coupon"></canvas>
+    </div>
+    <div class="row"><button id="copy" type="button">Copy code</button></div>
+    <p class="hint">In production, generate a unique single-use code on your server for each tap.</p>
+  </section>
+
+  <!-- 5. Review / feedback -->
+  <section id="review">
+    <h2>How was it?</h2>
+    <div class="stars" id="stars" role="radiogroup" aria-label="Rating"></div>
+    <div id="good" hidden>
+      <p class="sub" style="margin-bottom:12px">Glad you liked it. A quick public review helps us a lot.</p>
+      <a class="btn" href="#" id="gLink">Write a review</a>
+    </div>
+    <div id="bad" hidden>
+      <p class="sub" style="margin-bottom:12px">Sorry it missed. Tell us what went wrong and we'll fix it.</p>
+      <textarea id="fb" placeholder="What could be better?"></textarea>
+      <div class="row" style="margin-top:12px"><button id="send" type="button">Send feedback</button></div>
+    </div>
+    <p class="msg" id="thanks" hidden>Thank you. Your feedback was sent.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="row">
+    <a class="btn ghost" href="tel:+10000000000">Call us</a>
+    <a class="btn ghost" href="https://wa.me/10000000000">WhatsApp</a>
+    <a class="btn ghost" href="https://maps.google.com/?q=coffee">Directions</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function toast(t){var d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Rules: time of day + tap count (per browser; use your server/login for accuracy) ---- */
+  var visits=1;
+  try{visits=(parseInt(localStorage.getItem('marlo_visits'),10)||0)+1;localStorage.setItem('marlo_visits',String(visits))}catch(e){}
+  var h=new Date().getHours();
+  var part=h<5?'Still up?':h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  $('greet').textContent=part+(visits>1?' - welcome back, tap #'+visits:' - first tap');
+  if(visits>1){$('code').textContent='AGAIN15';$('deal').textContent='15% off - thanks for coming back'}
+
+  /* ---- Full screen ---- */
+  var de=document.documentElement;
+  var reqFS=de.requestFullscreen||de.webkitRequestFullscreen;
+  var inFS=function(){return document.fullscreenElement||document.webkitFullscreenElement};
+  function goFS(){try{if(reqFS&&!inFS()){var p=reqFS.call(de);if(p&&p.catch)p.catch(function(){})}}catch(e){}}
+  // No button, no message. Browsers only allow full screen after a touch, so the
+  // first tap anywhere on the page (Android Chrome) enters it silently.
+  var evs=['pointerup','click','touchend'];
+  function disarm(){evs.forEach(function(t){document.removeEventListener(t,goFS)})}
+  document.addEventListener('fullscreenchange',function(){if(inFS())disarm()});
+  if(reqFS){evs.forEach(function(t){document.addEventListener(t,goFS,{passive:true})})}
+
+  /* ---- 3D drag rotate ---- */
+  var box=$('box'),stage=$('stage'),ry=-25,drag=false,lx=0,auto=!reduce;
+  function paint(){box.style.setProperty('--ry',ry+'deg')}
+  stage.addEventListener('pointerdown',function(e){drag=true;auto=false;lx=e.clientX;stage.style.cursor='grabbing'});
+  window.addEventListener('pointermove',function(e){if(!drag)return;ry+=(e.clientX-lx)*.7;lx=e.clientX;paint()});
+  window.addEventListener('pointerup',function(){drag=false;stage.style.cursor='grab'});
+  (function spin(){if(auto){ry+=.25;paint()}requestAnimationFrame(spin)})();
+  var flipped=false;
+  $('flip').addEventListener('click',function(){auto=false;flipped=!flipped;ry=Math.round(ry/360)*360+(flipped?180:0);paint();this.textContent=flipped?'Flip to front':'Flip to back'});
+
+  /* ---- Brew timer ---- */
+  var steps=[
+    ['Bloom','Pour 50 g of water, let the coffee swell.',30],
+    ['First pour','Pour slowly in circles up to 150 g.',45],
+    ['Second pour','Pour up to 250 g, keep the bed level.',45],
+    ['Drawdown','Let it drip through. Then enjoy.',60]
+  ];
+  var dots=$('dots'),si=0,left=steps[0][2],timer=null,C=326.7;
+  steps.forEach(function(){var d=document.createElement('span');d.className='dot';dots.appendChild(d)});
+  function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+  function drawStep(){
+    var s=steps[si];$('stepName').textContent=s[0];$('stepTip').textContent=s[1];
+    Array.prototype.forEach.call(dots.children,function(d,i){d.className='dot'+(i<si?' done':i===si?' on':'')});
+    draw();
+  }
+  function draw(){$('clock').textContent=fmt(left);$('fg').style.strokeDashoffset=String(C*(1-left/steps[si][2]))}
+  function stop(){clearInterval(timer);timer=null;$('go').textContent='Start'}
+  function next(){stop();if(si<steps.length-1){si++;left=steps[si][2];drawStep()}else{si=0;left=steps[0][2];drawStep();toast('Done. Enjoy your cup.')}}
+  $('go').addEventListener('click',function(){
+    if(timer){stop();return}
+    $('go').textContent='Pause';
+    timer=setInterval(function(){left--;draw();if(left<=0){try{navigator.vibrate&&navigator.vibrate(120)}catch(e){}next()}},1000);
+  });
+  $('skip').addEventListener('click',next);
+  drawStep();
+
+  /* ---- Scratch card ---- */
+  var cv=$('cover'),ctx=cv.getContext('2d'),down=false,cleared=false;
+  function sizeCover(){
+    var r=cv.getBoundingClientRect();cv.width=Math.max(1,Math.round(r.width));cv.height=Math.max(1,Math.round(r.height));
+    ctx.globalCompositeOperation='source-over';
+    var g=ctx.createLinearGradient(0,0,cv.width,cv.height);g.addColorStop(0,'#f2b544');g.addColorStop(1,'#c98a1c');
+    ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.fillStyle='#0f2a35';ctx.font='700 18px Instrument Sans, system-ui, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Scratch here',cv.width/2,cv.height/2);
+  }
+  function scratchAt(e){
+    var r=cv.getBoundingClientRect();
+    ctx.globalCompositeOperation='destination-out';ctx.beginPath();ctx.arc(e.clientX-r.left,e.clientY-r.top,24,0,7);ctx.fill();
+  }
+  function checkCleared(){
+    if(cleared)return;
+    try{
+      var d=ctx.getImageData(0,0,cv.width,cv.height).data,n=0,t=0;
+      for(var i=3;i<d.length;i+=64){t++;if(d[i]===0)n++}
+      if(n/t>.4){cleared=true;cv.style.opacity='0';cv.style.pointerEvents='none';$('offerSub').textContent='Show this code at checkout or use it online.'}
+    }catch(e){}
+  }
+  cv.addEventListener('pointerdown',function(e){down=true;cv.setPointerCapture&&cv.setPointerCapture(e.pointerId);scratchAt(e)});
+  cv.addEventListener('pointermove',function(e){if(down)scratchAt(e)});
+  cv.addEventListener('pointerup',function(){down=false;checkCleared()});
+  cv.addEventListener('pointercancel',function(){down=false});
+  sizeCover();window.addEventListener('resize',function(){if(!cleared)sizeCover()});
+  $('copy').addEventListener('click',function(){
+    var c=$('code').textContent;
+    try{navigator.clipboard.writeText(c).then(function(){toast('Code copied: '+c)},function(){toast('Code: '+c)})}catch(e){toast('Code: '+c)}
+  });
+
+  /* ---- Rating: 4-5 stars -> public review, 1-3 -> private feedback ---- */
+  var sw=$('stars');
+  for(var i=1;i<=5;i++)(function(n){
+    var b=document.createElement('button');b.type='button';b.className='star';b.textContent='\u2605';
+    b.setAttribute('role','radio');b.setAttribute('aria-label',n+' star'+(n>1?'s':''));
+    b.addEventListener('click',function(){
+      Array.prototype.forEach.call(sw.children,function(s,k){s.classList.toggle('on',k<n)});
+      $('good').hidden=n<4;$('bad').hidden=n>=4;$('thanks').hidden=true;
+    });
+    sw.appendChild(b);
+  })(i);
+  $('send').addEventListener('click',function(){$('bad').hidden=true;$('thanks').hidden=false});
+  $('gLink').addEventListener('click',function(e){e.preventDefault();toast('Add your Google review link here')});
+})();
+</script>
+</body>
+</html>
