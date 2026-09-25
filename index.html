@@ -11,19 +11,19 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;800&family=Instrument+Sans:wght@400;500;600&display=swap">
 <style>
 :root{
-  --bg:#eef4f1;--surface:#ffffff;--ink:#0f2a35;--muted:#4a6570;--accent:#f2b544;--on-accent:#0f2a35;--line:#c9d8d2;--ok:#1f7a5a;
+  --bg:#dce9e2;--surface:#ffffff;--ink:#0f2a35;--muted:#4a6570;--accent:#f2b544;--on-accent:#0f2a35;--line:#c9d8d2;--ok:#1f7a5a;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f2a35;--surface:#163845;--ink:#f1f6f3;--muted:#9db8bf;--line:#28505e}}
 :root[data-theme="dark"]{--bg:#0f2a35;--surface:#163845;--ink:#f1f6f3;--muted:#9db8bf;--line:#28505e}
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;scroll-snap-type:y mandatory}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%;scroll-snap-type:y mandatory;background:var(--bg)}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Instrument Sans",system-ui,sans-serif;height:100vh;overflow-y:scroll}
 h1,h2{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;line-height:1.05;margin:0}
 h1{font-size:clamp(2.4rem,11vw,4rem);font-weight:800;letter-spacing:-.02em}
 h2{font-size:clamp(1.7rem,7vw,2.4rem);font-weight:800;letter-spacing:-.01em}
 p{margin:0}
-section{height:100vh;height:100svh;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:28px 22px;max-width:560px;margin:0 auto;overflow-y:auto}
+section{height:100vh;height:100svh;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:28px 22px;max-width:560px;margin:0 auto;overflow:hidden}
 .sub{color:var(--muted);max-width:34ch}
 button,.btn{font:600 1rem "Instrument Sans",system-ui,sans-serif;border:0;border-radius:14px;padding:14px 20px;background:var(--accent);color:var(--on-accent);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:48px}
 button.ghost,.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
@@ -185,6 +185,19 @@ footer{height:100vh;height:100svh;scroll-snap-align:start;scroll-snap-stop:alway
   var reqFS=de.requestFullscreen||de.webkitRequestFullscreen;
   var inFS=function(){return document.fullscreenElement||document.webkitFullscreenElement};
   function goFS(){try{if(reqFS&&!inFS()){var p=reqFS.call(de);if(p&&p.catch)p.catch(function(){})}}catch(e){}}
+  // Drive same-page "#id" links manually (see note above) instead of the native
+  // hash jump, which can race iOS's scroll-snap recalculation and bounce back.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]');
+    if(!a)return;
+    var id=a.getAttribute('href').slice(1),target=id&&document.getElementById(id);
+    if(!target)return;
+    e.preventDefault();
+    requestAnimationFrame(function(){
+      target.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+    });
+  });
+
   // Android Chrome: first touch anywhere enters true full screen, silently.
   var evs=['pointerup','click','touchend'];
   function disarm(){evs.forEach(function(t){document.removeEventListener(t,goFS)})}
